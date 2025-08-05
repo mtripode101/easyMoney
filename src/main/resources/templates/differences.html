@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Diferencias entre fechas</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <h1>Diferencias consecutivas</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Desde</th>
+                <th>Hasta</th>
+                <th>Monto Inicial</th>
+                <th>Monto Final</th>
+                <th>Diferencia</th>
+                <th>% Cambio</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="d : ${differences}">
+                <td th:text="${d.fromDate}"></td>
+                <td th:text="${d.toDate}"></td>
+                <td th:text="${d.fromAmount}"></td>
+                <td th:text="${d.toAmount}"></td>
+                <td th:text="${d.difference}"></td>
+                <td th:text="${d.percentageChange} + '%'"></td>
+            </tr>
+        </tbody>
+    </table>
+    <a href="/web/easy-money">Volver</a>
+</body>
+</html>

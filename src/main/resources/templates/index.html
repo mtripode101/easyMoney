@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Listado EasyMoney</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <h1>Listado de registros EasyMoney</h1>
+    <a href="/web/easy-money/new">Nuevo registro</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Monto</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="e : ${entries}">
+                <td th:text="${e.date}"></td>
+                <td th:text="${e.money}"></td>
+                <td th:text="${e.description}"></td>
+                <td>
+                    <a th:href="@{/web/easy-money/edit/{id}(id=${e.id})}">Editar</a>
+                    <a th:href="@{/web/easy-money/delete/{id}(id=${e.id})}">Eliminar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
