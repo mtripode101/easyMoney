@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Listado de Etiquetas</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <h1>Etiquetas</h1>
+    <a th:href="@{/web/tags/new}">Nueva Etiqueta</a>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th><th>Etiqueta</th><th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="tag : ${tags}">
+                <td th:text="${tag.id}"></td>
+                <td th:text="${tag.label}"></td>
+                <td>
+                    <a th:href="@{'/web/tags/edit/' + ${tag.id}}">Editar</a>
+                    <a th:href="@{'/web/tags/delete/' + ${tag.id}}">Eliminar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

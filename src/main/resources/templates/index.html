@@ -5,14 +5,20 @@
     <link rel="stylesheet" th:href="@{/css/style.css}" />
 </head>
 <body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
     <h1>Listado de registros EasyMoney</h1>
-    <a href="/web/easy-money/new">Nuevo registro</a>
+
+    <a th:href="@{/web/easy-money/new}">Nuevo registro</a>
+
     <table>
         <thead>
             <tr>
                 <th>Fecha</th>
                 <th>Monto</th>
                 <th>Descripción</th>
+                <th>Usuario</th>
+                <th>Categoría</th>
+                <th>Etiquetas</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -21,6 +27,11 @@
                 <td th:text="${e.date}"></td>
                 <td th:text="${e.money}"></td>
                 <td th:text="${e.description}"></td>
+                <td th:text="${e.user != null ? e.user.name : '—'}"></td>
+                <td th:text="${e.category != null ? e.category.name : '—'}"></td>
+                <td>
+                    <span th:each="tag : ${e.tags}" th:text="${tag.label} + ' '"></span>
+                </td>
                 <td>
                     <a th:href="@{/web/easy-money/edit/{id}(id=${e.id})}">Editar</a>
                     <a th:href="@{/web/easy-money/delete/{id}(id=${e.id})}">Eliminar</a>

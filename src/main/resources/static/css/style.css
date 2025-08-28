@@ -1,21 +1,32 @@
+/* General layout */
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
     background-color: #f9f9f9;
-}
-
-h1 {
     color: #333;
 }
 
+/* Headings */
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Tables */
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+    background-color: #fff;
 }
 
 table, th, td {
     border: 1px solid #ccc;
+}
+
+th {
+    background-color: #f0f0f0;
+    font-weight: bold;
 }
 
 th, td {
@@ -23,6 +34,7 @@ th, td {
     text-align: left;
 }
 
+/* Links */
 a {
     margin-right: 10px;
     color: #007bff;
@@ -33,7 +45,71 @@ a:hover {
     text-decoration: underline;
 }
 
-form input, form button {
+/* Forms */
+form {
+    background-color: #fff;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    max-width: 500px;
+}
+
+form label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+form input,
+form select,
+form textarea,
+form button {
+    width: 100%;
     margin: 5px 0;
     padding: 6px;
+    box-sizing: border-box;
+}
+
+/* Buttons */
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 8px 12px;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Navbar */
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    padding: 10px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+nav a {
+    font-weight: bold;
+    color: #333;
+}
+
+nav a:hover {
+    color: #007bff;
+}
+
+/* Utility spacing */
+hr {
+    margin: 20px 0;
+}
+
+p {
+    margin: 10px 0;
 }

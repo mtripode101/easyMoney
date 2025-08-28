@@ -5,7 +5,9 @@
     <link rel="stylesheet" th:href="@{/css/style.css}" />
 </head>
 <body>
-    <h1>Diferencias consecutivas</h1>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <h1>Diferencias consecutivas entre registros</h1>
+
     <table>
         <thead>
             <tr>
@@ -21,13 +23,15 @@
             <tr th:each="d : ${differences}">
                 <td th:text="${d.fromDate}"></td>
                 <td th:text="${d.toDate}"></td>
-                <td th:text="${d.fromAmount}"></td>
-                <td th:text="${d.toAmount}"></td>
-                <td th:text="${d.difference}"></td>
-                <td th:text="${d.percentageChange} + '%'"></td>
+                <td th:text="${#numbers.formatDecimal(d.fromAmount, 1, 'COMMA', 2, 'POINT')}"></td>
+                <td th:text="${#numbers.formatDecimal(d.toAmount, 1, 'COMMA', 2, 'POINT')}"></td>
+                <td th:text="${#numbers.formatDecimal(d.difference, 1, 'COMMA', 2, 'POINT')}"></td>
+                <td th:text="${d.percentageChange + ' %'}"></td>
             </tr>
         </tbody>
     </table>
-    <a href="/web/easy-money">Volver</a>
+
+    <br/>
+    <a th:href="@{/web/easy-money/}">← Volver al listado</a>
 </body>
 </html>

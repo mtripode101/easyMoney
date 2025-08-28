@@ -1,6 +1,7 @@
 package com.easymoney.easymoney.dto;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Comparator;
 
@@ -13,6 +14,7 @@ public class MoneyDifference {
     private BigDecimal difference;
     private BigDecimal percentageChange;
 
+    // Constructor completo
     public MoneyDifference(LocalDate fromDate, LocalDate toDate,
             BigDecimal fromAmount, BigDecimal toAmount,
             BigDecimal difference, BigDecimal percentageChange) {
@@ -24,16 +26,19 @@ public class MoneyDifference {
         this.percentageChange = percentageChange;
     }
 
-    // Getters and Setters
+    // Método de fábrica para calcular automáticamente
+    public static MoneyDifference of(LocalDate fromDate, LocalDate toDate,
+            BigDecimal fromAmount, BigDecimal toAmount) {
+        BigDecimal difference = toAmount.subtract(fromAmount);
+        BigDecimal percentageChange = fromAmount.compareTo(BigDecimal.ZERO) == 0
+                ? BigDecimal.ZERO
+                : difference.multiply(BigDecimal.valueOf(100))
+                        .divide(fromAmount, 2, RoundingMode.HALF_UP);
 
-    public BigDecimal getPercentageChange() {
-        return percentageChange;
+        return new MoneyDifference(fromDate, toDate, fromAmount, toAmount, difference, percentageChange);
     }
 
-    public void setPercentageChange(BigDecimal percentageChange) {
-        this.percentageChange = percentageChange;
-    }
-
+    // Getters y Setters
     public LocalDate getFromDate() {
         return fromDate;
     }
@@ -74,8 +79,15 @@ public class MoneyDifference {
         this.difference = difference;
     }
 
-    // 🔍 Comparadores estáticos
+    public BigDecimal getPercentageChange() {
+        return percentageChange;
+    }
 
+    public void setPercentageChange(BigDecimal percentageChange) {
+        this.percentageChange = percentageChange;
+    }
+
+    // Comparadores estáticos para ordenamiento
     public static Comparator<MoneyDifference> byFromDateAsc() {
         return Comparator.comparing(MoneyDifference::getFromDate);
     }
@@ -90,5 +102,12 @@ public class MoneyDifference {
 
     public static Comparator<MoneyDifference> byPercentageChangeDesc() {
         return Comparator.comparing(MoneyDifference::getPercentageChange).reversed();
+    }
+
+    // toString para depuración
+    @Override
+    public String toString() {
+        return String.format("From %s to %s: %s → %s | Δ %s | %s%%",
+                fromDate, toDate, fromAmount, toAmount, difference, percentageChange);
     }
 }

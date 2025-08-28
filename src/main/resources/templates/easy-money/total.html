@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Diferencia Total</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <h1>Diferencia Total de Movimiento Financiero</h1>
+
+    <table>
+        <tr>
+            <th>Desde</th>
+            <td th:text="${total.fromDate}"></td>
+        </tr>
+        <tr>
+            <th>Hasta</th>
+            <td th:text="${total.toDate}"></td>
+        </tr>
+        <tr>
+            <th>Monto Inicial</th>
+            <td th:text="${#numbers.formatDecimal(total.fromAmount, 1, 'COMMA', 2, 'POINT')}"></td>
+        </tr>
+        <tr>
+            <th>Monto Final</th>
+            <td th:text="${#numbers.formatDecimal(total.toAmount, 1, 'COMMA', 2, 'POINT')}"></td>
+        </tr>
+        <tr>
+            <th>Diferencia</th>
+            <td th:text="${#numbers.formatDecimal(total.difference, 1, 'COMMA', 2, 'POINT')}"></td>
+        </tr>
+        <tr>
+            <th>% Cambio</th>
+            <td th:text="${total.percentageChange + ' %'}"></td>
+        </tr>
+    </table>
+
+    <br/>
+    <a th:href="@{/web/easy-money/}">← Volver al listado</a>
+</body>
+</html>

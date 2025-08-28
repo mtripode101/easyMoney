@@ -1,54 +1,89 @@
 package com.easymoney.easymoney.controller;
 
-import java.time.LocalDate;
-
+import com.easymoney.easymoney.model.Category;
+import com.easymoney.easymoney.model.EasyMoney;
+import com.easymoney.easymoney.model.Tag;
+import com.easymoney.easymoney.model.User;
+import com.easymoney.easymoney.service.CategoryService;
+import com.easymoney.easymoney.service.EasyMoneyService;
+import com.easymoney.easymoney.service.TagService;
+import com.easymoney.easymoney.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
-import com.easymoney.easymoney.model.EasyMoney;
-import com.easymoney.easymoney.service.EasyMoneyService;
+import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 @RequestMapping("/web/easy-money")
 public class WebController {
 
     @Autowired
-    private EasyMoneyService service;
+    private EasyMoneyService easyMoneyService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
+    private TagService tagService;
 
     @GetMapping("/")
     public String list(Model model) {
-        model.addAttribute("entries", service.findAll());
+        model.addAttribute("entries", easyMoneyService.findAll());
         return "index";
     }
 
     @GetMapping("/new")
     public String createForm(Model model) {
         model.addAttribute("easyMoney", new EasyMoney());
-        return "form";
+        model.addAttribute("users", userService.findAll());
+        model.addAttribute("categories", categoryService.findAll());
+        model.addAttribute("tags", tagService.findAll());
+        return "easy-money/form";
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute EasyMoney easyMoney) {
-        service.save(easyMoney);
+    public String save(@Valid @ModelAttribute EasyMoney easyMoney, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("users", userService.findAll());
+            model.addAttribute("categories", categoryService.findAll());
+            model.addAttribute("tags", tagService.findAll());
+            return "easy-money/form";
+        }
+
+        // Reconstrucción explícita
+        User user = userService.findById(easyMoney.getUser().getId());
+        Category category = categoryService.findById(easyMoney.getCategory().getId());
+        List<Tag> tags = tagService.findAllById(
+                easyMoney.getTags().stream().map(Tag::getId).toList());
+
+        easyMoney.setUser(user);
+        easyMoney.setCategory(category);
+        easyMoney.setTags(tags);
+
+        easyMoneyService.save(easyMoney);
         return "redirect:/web/easy-money/";
     }
 
     @GetMapping("/edit/{id}")
     public String editForm(@PathVariable Long id, Model model) {
-        model.addAttribute("easyMoney", service.findById(id));
-        return "form";
+        model.addAttribute("easyMoney", easyMoneyService.findById(id));
+        model.addAttribute("users", userService.findAll());
+        model.addAttribute("categories", categoryService.findAll());
+        model.addAttribute("tags", tagService.findAll());
+        return "easy-money/form";
     }
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id) {
-        service.delete(id);
+        easyMoneyService.delete(id);
         return "redirect:/web/easy-money/";
     }
 
@@ -57,17 +92,22 @@ public class WebController {
         try {
             LocalDate startDate = LocalDate.parse(start);
             LocalDate endDate = LocalDate.parse(end);
-            model.addAttribute("differences", service.calculateConsecutiveDifferences(startDate, endDate));
+            model.addAttribute("differences", easyMoneyService.calculateConsecutiveDifferences(startDate, endDate));
         } catch (Exception e) {
             model.addAttribute("error", "Fechas inválidas. Usa el formato YYYY-MM-DD.");
         }
-        return "differences";
+        return "easy-money/differences";
     }
 
     @GetMapping("/total")
     public String total(@RequestParam String start, @RequestParam String end, Model model) {
-        model.addAttribute("total",
-                service.calculateTotalMoneyDifference(LocalDate.parse(start), LocalDate.parse(end)));
-        return "total";
+        try {
+            LocalDate startDate = LocalDate.parse(start);
+            LocalDate endDate = LocalDate.parse(end);
+            model.addAttribute("total", easyMoneyService.calculateTotalMoneyDifference(startDate, endDate));
+        } catch (Exception e) {
+            model.addAttribute("error", "Fechas inválidas. Usa el formato YYYY-MM-DD.");
+        }
+        return "easy-money/total";
     }
 }

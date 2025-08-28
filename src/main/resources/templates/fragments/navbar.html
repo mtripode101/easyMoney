@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <nav th:fragment="navbar">
+        <ul style="list-style: none; display: flex; gap: 20px;">
+            <li><a th:href="@{/web/easy-money/}">💸 EasyMoney</a></li>
+            <li><a th:href="@{/web/users/}">👤 Usuarios</a></li>
+            <li><a th:href="@{/web/categories/}">📂 Categorías</a></li>
+            <li><a th:href="@{/web/tags/}">🏷️ Etiquetas</a></li>
+        </ul>
+        <hr/>
+    </nav>
+</body>
+</html>
