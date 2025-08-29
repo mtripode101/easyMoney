@@ -8,6 +8,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
 public class EasyMoney {
 
@@ -15,6 +17,7 @@ public class EasyMoney {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull
     private LocalDate date;
 
