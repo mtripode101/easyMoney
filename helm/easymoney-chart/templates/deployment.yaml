@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Chart.Name }}-app
+  labels:
+    app: {{ .Chart.Name }}-app
 spec:
   replicas: 1
   selector:
@@ -18,6 +20,9 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: {{ .Values.app.port }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Chart.Name }}-config
           env:
             - name: SPRING_DATASOURCE_URL
               value: "{{ .Values.app.env.SPRING_DATASOURCE_URL }}"
@@ -25,13 +30,3 @@ spec:
               value: "{{ .Values.app.env.SPRING_DATASOURCE_USERNAME }}"
             - name: SPRING_DATASOURCE_PASSWORD
               value: "{{ .Values.app.env.SPRING_DATASOURCE_PASSWORD }}"
-            - name: SPRING_APPLICATION_NAME
-              value: "{{ .Values.app.env.SPRING_APPLICATION_NAME }}"
-            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-              value: "{{ .Values.app.env.SPRING_JPA_HIBERNATE_DDL_AUTO }}"
-            - name: SPRING_JPA_SHOW_SQL
-              value: "{{ .Values.app.env.SPRING_JPA_SHOW_SQL }}"
-            - name: SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT
-              value: "{{ .Values.app.env.SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT }}"
-            - name: SPRING_PROFILES_ACTIVE
-              value: "{{ .Values.app.env.SPRING_PROFILES_ACTIVE }}"
