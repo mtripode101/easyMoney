@@ -34,4 +34,9 @@ public class CategoryService {
         return repository.findByName(name)
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada con nombre: " + name));
     }
+
+    // CategoryService.java
+    public List<Category> findByNameContainingIgnoreCase(String keyword) {
+        return repository.findByNameContainingIgnoreCase(keyword);
+    }
 }

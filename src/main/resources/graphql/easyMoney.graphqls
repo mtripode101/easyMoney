@@ -1,0 +1,36 @@
+type Query {
+  easyMoneyById(id: ID!): EasyMoney
+  allEasyMoney: [EasyMoney]
+  categoryById(id: ID!): Category
+  categoryByName(name: String!): Category
+  searchCategories(keyword: String!): [Category]
+  allCategories: [Category]
+}
+
+type EasyMoney {
+  id: ID!
+  date: String!
+  money: Float!
+  description: String
+  category: Category
+  user: User
+  tags: [Tag]
+}
+
+type Category {
+  id: ID!
+  name: String!
+  transactions: [EasyMoney]
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+}
+
+type Tag {
+  id: ID!
+  label: String!
+  easyMoneyEntries: [EasyMoney]
+}
