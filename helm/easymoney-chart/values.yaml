@@ -1,0 +1,26 @@
+app:
+  image: easymoney-app
+  tag: latest
+  port: 8080
+  env:
+    SPRING_APPLICATION_NAME: easymoney
+    SPRING_DATASOURCE_URL: jdbc:mysql://easymoney-db:3306/easymoney_db
+    SPRING_DATASOURCE_USERNAME: root
+    SPRING_DATASOURCE_PASSWORD: e12345678E
+    SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    SPRING_JPA_SHOW_SQL: "true"
+    SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
+    SPRING_PROFILES_ACTIVE: docker
+
+db:
+  image: mysql
+  tag: "8.0"
+  port: 3306
+  env:
+    MYSQL_DATABASE: easymoney_db
+    MYSQL_ROOT_PASSWORD: e12345678E
+  persistence:
+    enabled: true
+    storageClass: ""
+    accessMode: ReadWriteOnce
+    size: 1Gi

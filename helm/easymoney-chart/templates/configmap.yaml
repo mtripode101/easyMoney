@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-config
+data:
+  SPRING_APPLICATION_NAME: {{ quote .Values.app.env.SPRING_APPLICATION_NAME }}
+  SPRING_JPA_HIBERNATE_DDL_AUTO: {{ quote .Values.app.env.SPRING_JPA_HIBERNATE_DDL_AUTO }}
+  SPRING_JPA_SHOW_SQL: {{ quote .Values.app.env.SPRING_JPA_SHOW_SQL }}
+  SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: {{ quote .Values.app.env.SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT }}
+  SPRING_PROFILES_ACTIVE: {{ quote .Values.app.env.SPRING_PROFILES_ACTIVE }}

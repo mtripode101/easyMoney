@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: easymoney-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: easymoney
+  template:
+    metadata:
+      labels:
+        app: easymoney
+    spec:
+      containers:
+        - name: app
+          image: easymoney-app:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_APPLICATION_NAME
+              value: easymoney
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://easymoney-db:3306/easymoney_db
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: e12345678E
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: update
+            - name: SPRING_JPA_SHOW_SQL
+              value: "true"
+            - name: SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT
+              value: org.hibernate.dialect.MySQL8Dialect
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
