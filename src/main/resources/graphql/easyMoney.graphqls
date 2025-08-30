@@ -1,12 +1,53 @@
+# 🔍 Queries
 type Query {
+  # EasyMoney
   easyMoneyById(id: ID!): EasyMoney
   allEasyMoney: [EasyMoney]
+  transactionsByDateRange(start: String!, end: String!): [EasyMoney]
+  searchTransactions(keyword: String!): [EasyMoney]
+  pagedTransactions(page: Int!, size: Int!, sortBy: String!): [EasyMoney]
+  totalMoney(start: String!, end: String!): Float
+  consecutiveDifferences(start: String!, end: String!): [MoneyDifference]
+  totalDifference(start: String!, end: String!): MoneyDifference
+
+  # Category
   categoryById(id: ID!): Category
   categoryByName(name: String!): Category
   searchCategories(keyword: String!): [Category]
   allCategories: [Category]
+
+  # User
+  userById(id: ID!): User
+  userByEmail(email: String!): User
+  allUsers: [User]
+
+  # Tag
+  tagById(id: ID!): Tag
+  searchTags(keyword: String!): [Tag]
+  allTags: [Tag]
 }
 
+# ✏️ Mutations
+type Mutation {
+  # EasyMoney
+  createEasyMoney(input: EasyMoneyInput!): EasyMoney
+  updateEasyMoney(id: ID!, input: EasyMoneyInput!): EasyMoney
+  deleteEasyMoney(id: ID!): Boolean
+
+  # Category
+  createCategory(name: String!): Category
+  deleteCategory(id: ID!): Boolean
+
+  # User
+  createUser(name: String!, email: String!): User
+  deleteUser(id: ID!): Boolean
+
+  # Tag
+  createTag(label: String!): Tag
+  deleteTag(id: ID!): Boolean
+}
+
+# 🧩 Tipos
 type EasyMoney {
   id: ID!
   date: String!
@@ -27,10 +68,28 @@ type User {
   id: ID!
   name: String!
   email: String!
+  transactions: [EasyMoney]
 }
 
 type Tag {
   id: ID!
   label: String!
   easyMoneyEntries: [EasyMoney]
+}
+
+type MoneyDifference {
+  fromDate: String!
+  toDate: String!
+  fromAmount: Float!
+  toAmount: Float!
+}
+
+# 📥 Inputs
+input EasyMoneyInput {
+  date: String!
+  money: Float!
+  description: String
+  userId: ID!
+  categoryId: ID!
+  tagIds: [ID!]
 }

@@ -4,6 +4,8 @@ import com.easymoney.easymoney.model.Category;
 import com.easymoney.easymoney.model.EasyMoney;
 import com.easymoney.easymoney.service.CategoryService;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
@@ -18,28 +20,47 @@ public class CategoryGraphQLController {
         this.categoryService = categoryService;
     }
 
-    @SchemaMapping(typeName = "Query", field = "categoryById")
-    public Category getCategoryById(@Argument Long id) {
+    // 🔍 Queries
+
+    @QueryMapping
+    public Category categoryById(@Argument Long id) {
         return categoryService.findById(id);
     }
 
-    @SchemaMapping(typeName = "Query", field = "categoryByName")
-    public Category getCategoryByName(@Argument String name) {
+    @QueryMapping
+    public Category categoryByName(@Argument String name) {
         return categoryService.findByName(name);
     }
 
-    @SchemaMapping(typeName = "Query", field = "searchCategories")
+    @QueryMapping
     public List<Category> searchCategories(@Argument String keyword) {
         return categoryService.findByNameContainingIgnoreCase(keyword);
     }
 
-    @SchemaMapping(typeName = "Query", field = "allCategories")
-    public List<Category> getAllCategories() {
+    @QueryMapping
+    public List<Category> allCategories() {
         return categoryService.findAll();
     }
 
-    @SchemaMapping
-    public List<EasyMoney> easyMoneyList(Category category) {
-        return category.getTransactions(); // Asumiendo que tenés un getter en Category
+    // 🧩 Resolver de relación: Category → EasyMoney
+
+    @SchemaMapping(typeName = "Category", field = "transactions")
+    public List<EasyMoney> resolveTransactions(Category category) {
+        return category.getTransactions();
+    }
+
+    // ✏️ Mutations
+
+    @MutationMapping
+    public Category createCategory(@Argument String name) {
+        Category category = new Category();
+        category.setName(name);
+        return categoryService.save(category);
+    }
+
+    @MutationMapping
+    public Boolean deleteCategory(@Argument Long id) {
+        categoryService.delete(id);
+        return true;
     }
 }
