@@ -1,0 +1,39 @@
+# 🔍 Queries
+type Query {
+  easyMoneyById(id: ID!): EasyMoney
+  allEasyMoney: [EasyMoney]
+  transactionsByDateRange(start: String!, end: String!): [EasyMoney]
+  searchTransactions(keyword: String!): [EasyMoney]
+  pagedTransactions(page: Int!, size: Int!, sortBy: String!): [EasyMoney]
+  totalMoney(start: String!, end: String!): Float
+  consecutiveDifferences(start: String!, end: String!): [MoneyDifference]
+  totalDifference(start: String!, end: String!): MoneyDifference
+}
+
+# ✏️ Mutations
+type Mutation {
+  createEasyMoney(input: EasyMoneyInput!): EasyMoney
+  updateEasyMoney(id: ID!, input: EasyMoneyInput!): EasyMoney
+  deleteEasyMoney(id: ID!): Boolean
+}
+
+# 🧩 Tipo
+type EasyMoney {
+  id: ID!
+  date: String!
+  money: Float!
+  description: String
+  category: Category
+  user: User
+  tags: [Tag]
+}
+
+# 📥 Input
+input EasyMoneyInput {
+  date: String!
+  money: Float!
+  description: String
+  userId: ID!
+  categoryId: ID!
+  tagIds: [ID!]
+}

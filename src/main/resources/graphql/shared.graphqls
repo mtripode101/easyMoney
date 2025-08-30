@@ -1,0 +1,7 @@
+# 🧩 Tipo auxiliar
+type MoneyDifference {
+  fromDate: String!
+  toDate: String!
+  fromAmount: Float!
+  toAmount: Float!
+}

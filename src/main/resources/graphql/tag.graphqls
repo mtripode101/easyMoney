@@ -1,0 +1,19 @@
+# 🔍 Queries
+extend type Query {
+  tagById(id: ID!): Tag
+  searchTags(keyword: String!): [Tag]
+  allTags: [Tag]
+}
+
+# ✏️ Mutations
+extend type Mutation {
+  createTag(label: String!): Tag
+  deleteTag(id: ID!): Boolean
+}
+
+# 🧩 Tipo
+type Tag {
+  id: ID!
+  label: String!
+  easyMoneyEntries: [EasyMoney]
+}
