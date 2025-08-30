@@ -1,0 +1,20 @@
+# 🔍 Queries
+extend type Query {
+  userById(id: ID!): User
+  userByEmail(email: String!): User
+  allUsers: [User]
+}
+
+# ✏️ Mutations
+extend type Mutation {
+  createUser(name: String!, email: String!): User
+  deleteUser(id: ID!): Boolean
+}
+
+# 🧩 Tipo
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  transactions: [EasyMoney]
+}
