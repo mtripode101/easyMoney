@@ -8,6 +8,7 @@ import com.easymoney.easymoney.service.CategoryService;
 import com.easymoney.easymoney.service.EasyMoneyService;
 import com.easymoney.easymoney.service.TagService;
 import com.easymoney.easymoney.service.UserService;
+import com.easymoney.easymoney.scylla.log.service.ScyllaLogService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,9 +35,14 @@ public class WebController {
     @Autowired
     private TagService tagService;
 
+    @Autowired
+    private ScyllaLogService scyllaLogService;
+
     @GetMapping("/")
     public String list(Model model) {
         model.addAttribute("entries", easyMoneyService.findAll());
+        scyllaLogService.log("system", "List entries", "INFO", "Se accedió al listado de registros",
+                "WebController.list");
         return "index";
     }
 
@@ -46,6 +52,8 @@ public class WebController {
         model.addAttribute("users", userService.findAll());
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("tags", tagService.findAll());
+        scyllaLogService.log("system", "Create form", "INFO", "Se accedió al formulario de creación",
+                "WebController.createForm");
         return "easy-money/form";
     }
 
@@ -55,20 +63,23 @@ public class WebController {
             model.addAttribute("users", userService.findAll());
             model.addAttribute("categories", categoryService.findAll());
             model.addAttribute("tags", tagService.findAll());
+            scyllaLogService.log("system", "Validation error", "WARN", "Formulario con errores de validación",
+                    "WebController.save");
             return "easy-money/form";
         }
 
-        // Reconstrucción explícita
         User user = userService.findById(easyMoney.getUser().getId());
         Category category = categoryService.findById(easyMoney.getCategory().getId());
-        List<Tag> tags = tagService.findAllById(
-                easyMoney.getTags().stream().map(Tag::getId).toList());
+        List<Tag> tags = tagService.findAllById(easyMoney.getTags().stream().map(Tag::getId).toList());
 
         easyMoney.setUser(user);
         easyMoney.setCategory(category);
         easyMoney.setTags(tags);
 
         easyMoneyService.save(easyMoney);
+        scyllaLogService.log(user.getName(), "Save entry", "INFO", "Registro guardado correctamente",
+                "WebController.save");
+
         return "redirect:/web/easy-money/";
     }
 
@@ -78,12 +89,16 @@ public class WebController {
         model.addAttribute("users", userService.findAll());
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("tags", tagService.findAll());
+        scyllaLogService.log("system", "Edit form", "INFO", "Se accedió al formulario de edición para ID: " + id,
+                "WebController.editForm");
         return "easy-money/form";
     }
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id) {
         easyMoneyService.delete(id);
+        scyllaLogService.log("system", "Delete entry", "INFO", "Registro eliminado con ID: " + id,
+                "WebController.delete");
         return "redirect:/web/easy-money/";
     }
 
@@ -93,8 +108,12 @@ public class WebController {
             LocalDate startDate = LocalDate.parse(start);
             LocalDate endDate = LocalDate.parse(end);
             model.addAttribute("differences", easyMoneyService.calculateConsecutiveDifferences(startDate, endDate));
+            scyllaLogService.log("system", "Calculate differences", "INFO", "Consulta de diferencias entre fechas",
+                    "WebController.differences");
         } catch (Exception e) {
             model.addAttribute("error", "Fechas inválidas. Usa el formato YYYY-MM-DD.");
+            scyllaLogService.log("system", "Date parsing error", "ERROR", "Fechas inválidas: " + start + " - " + end,
+                    "WebController.differences");
         }
         return "easy-money/differences";
     }
@@ -105,8 +124,12 @@ public class WebController {
             LocalDate startDate = LocalDate.parse(start);
             LocalDate endDate = LocalDate.parse(end);
             model.addAttribute("total", easyMoneyService.calculateTotalMoneyDifference(startDate, endDate));
+            scyllaLogService.log("system", "Calculate total", "INFO", "Consulta de total entre fechas",
+                    "WebController.total");
         } catch (Exception e) {
             model.addAttribute("error", "Fechas inválidas. Usa el formato YYYY-MM-DD.");
+            scyllaLogService.log("system", "Date parsing error", "ERROR", "Fechas inválidas: " + start + " - " + end,
+                    "WebController.total");
         }
         return "easy-money/total";
     }
