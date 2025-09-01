@@ -1,23 +1,42 @@
 version: '3.8'
+
 services:
   app:
+    restart: on-failure
     build: .
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      scylla:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: easymoney
+
+      # MySQL
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/easymoney_db
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: e12345678E
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_SHOW_SQL: true
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
+
+      # Perfil activo
       SPRING_PROFILES_ACTIVE: docker
+
+      # ScyllaDB
+      SCYLLA_CONTACT_POINT: scylla
+      SCYLLA_PORT: 9042
+      SCYLLA_KEYSPACE: easymoney
+      SCYLLA_DATACENTER: datacenter1
+
+    networks:
+      - easymoney-net
 
   db:
     image: mysql:8.0
+    container_name: easymoney_db
     environment:
       MYSQL_DATABASE: easymoney_db
       MYSQL_ROOT_PASSWORD: e12345678E
@@ -31,6 +50,29 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - easymoney-net
+
+  scylla:
+    image: scylladb/scylla:5.2
+    container_name: easymoney-scylla
+    ports:
+      - "9042:9042"
+    volumes:
+      - scylla_data:/var/lib/scylla
+    command: --developer-mode 1 --overprovisioned 1
+    healthcheck:
+      test: ["CMD", "nodetool", "status"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    networks:
+      - easymoney-net
 
 volumes:
   mysql_data:
+  scylla_data:
+
+networks:
+  easymoney-net:
+    driver: bridge
